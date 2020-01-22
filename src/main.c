@@ -1,10 +1,17 @@
 #include "raylib.h"
-
 #ifdef PI
+
 #undef PI
 #endif
+#define SP_DRAW_DOUBLE_FACED
+
+#define SP_LAYER_SPACING 0.5
+
+#define SP_LAYER_SPACING_BASE -1.0
 
 #include <spine-raylib.h>
+#include <spine/spine.h>
+
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
 #endif
@@ -14,6 +21,17 @@ typedef struct GameContext {
     Vector2 screen_size;
     Camera3D camera;
 } GameContext;
+
+GameContext game_context;
+
+typedef struct SPAsset {
+    spAtlas* atlas;
+    spSkeletonJson* json;
+    spSkeletonData* skeletonData;
+    spSkeleton* skeleton;
+    spAnimationStateData* animationStateData;
+    spAnimationState* animationState;
+} SPAsset;
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
@@ -48,31 +66,37 @@ void cube_init_position(ecs_rows_t *rows){
 
 ecs_world_t *world;
 
-void game_update(void) {
-    ecs_progress(world, 0);
-}
 
 
-void render(ecs_rows_t *rows){
-    ECS_COLUMN(rows, Vector3, position, 1);
-
-    GameContext *game_context = ecs_get_system_context(rows->world, rows->system);
-
+void pre_render(GameContext* game_context){
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(game_context->camera);
     UpdateCamera(&game_context->camera);
+}
+
+void post_render(){
+    DrawGrid(10, 1.0f);
+    EndMode3D();
+    DrawFPS(10, 10);
+    EndDrawing();
+}
+
+void game_update() {
+    pre_render(&game_context);
+    ecs_progress(world, 0);
+    post_render();
+}
+
+void render(ecs_rows_t *rows){
+    ECS_COLUMN(rows, Vector3, position, 1);
+
+    rows->delta_time
 
     for (int i = 0; i < rows->count; i ++) {
         DrawCube(position[i], 2.0f, 2.0f, 2.0f, CLITERAL(Color){11, 110, 176, 255});
         DrawCubeWires(position[i], 2.0f, 2.0f, 2.0f, MAROON);
     }
-
-    DrawGrid(10, 1.0f);
-    EndMode3D();
-    DrawFPS(10, 10);
-    EndDrawing();
-
 }
 
 int main(int argc, char* argv[]) {
@@ -81,9 +105,10 @@ int main(int argc, char* argv[]) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 3d camera free");
     SetTargetFPS(60);
 
-    GameContext game_context = init_game_context();
+    game_context = init_game_context();
 
     ECS_COMPONENT(world, Vector3);
+    ECS_COMPONENT(world, SPAsset);
     ECS_TAG(world, Redereable);
 
     ECS_SYSTEM(world, render, EcsOnUpdate, Vector3, Redereable);
@@ -91,6 +116,7 @@ int main(int argc, char* argv[]) {
     ecs_set_system_context(world, render, &game_context);
 
     ECS_ENTITY(world, cube, Vector3, Redereable);
+    ECS_ENTITY(world, dragon, Vector3, SPAsset);
 
     ecs_set_target_fps(world, 60);
 
@@ -98,7 +124,10 @@ int main(int argc, char* argv[]) {
     emscripten_set_main_loop(game_update, 0, 1);
 #else
 
-    while(ecs_progress(world, 0) && !WindowShouldClose()){
+    while(!WindowShouldClose()){
+        pre_render(&game_context);
+        ecs_progress(world, 0);
+        post_render();
     }
 
     ecs_fini(world);
