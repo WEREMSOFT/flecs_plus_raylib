@@ -195,7 +195,7 @@ Module['FS_createPath']('/assets', 'dragon', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 194829, "filename": "/assets/dragon/dragon2.png"}, {"start": 194829, "audio": 0, "end": 199053, "filename": "/assets/dragon/NewDragon.atlas"}, {"start": 199053, "audio": 0, "end": 827590, "filename": "/assets/dragon/dragon.png"}, {"start": 827590, "audio": 0, "end": 860552, "filename": "/assets/dragon/NewDragon.json"}], "remote_package_size": 860552, "package_uuid": "75a53c97-be32-4290-bec1-23a441774889"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 194829, "filename": "/assets/dragon/dragon2.png"}, {"start": 194829, "audio": 0, "end": 199053, "filename": "/assets/dragon/NewDragon.atlas"}, {"start": 199053, "audio": 0, "end": 827590, "filename": "/assets/dragon/dragon.png"}, {"start": 827590, "audio": 0, "end": 860552, "filename": "/assets/dragon/NewDragon.json"}], "remote_package_size": 860552, "package_uuid": "102597c4-e412-4745-a6fb-b02af8fcb669"});
 
 })();
 
@@ -1386,7 +1386,7 @@ var STATIC_BASE = 1024,
 
 var TOTAL_STACK = 5242880;
 
-var INITIAL_TOTAL_MEMORY = Module['TOTAL_MEMORY'] || 16777216;
+var INITIAL_TOTAL_MEMORY = Module['TOTAL_MEMORY'] || 67108864;
 
 
 
