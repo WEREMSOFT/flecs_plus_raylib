@@ -91,8 +91,6 @@ void game_update() {
 void render(ecs_rows_t *rows){
     ECS_COLUMN(rows, Vector3, position, 1);
 
-    rows->delta_time
-
     for (int i = 0; i < rows->count; i ++) {
         DrawCube(position[i], 2.0f, 2.0f, 2.0f, CLITERAL(Color){11, 110, 176, 255});
         DrawCubeWires(position[i], 2.0f, 2.0f, 2.0f, MAROON);
