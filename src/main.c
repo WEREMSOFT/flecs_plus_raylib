@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
     ECS_ENTITY(world, cube, Vector3, Redereable);
 
     ECS_TYPE(world, Dragon, Vector3, sp_asset_t);
-    ecs_new_w_count(world, Dragon, 100);
+    ecs_new_w_count(world, Dragon, 500);
 
     ecs_set_target_fps(world, 60);
 
