@@ -195,7 +195,7 @@ Module['FS_createPath']('/assets', 'dragon', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 10495, "filename": "/assets/scarfy.png"}, {"start": 10495, "audio": 0, "end": 25922, "filename": "/assets/smoke.png"}, {"start": 25922, "audio": 0, "end": 220751, "filename": "/assets/dragon/dragon2.png"}, {"start": 220751, "audio": 0, "end": 224975, "filename": "/assets/dragon/NewDragon.atlas"}, {"start": 224975, "audio": 0, "end": 853512, "filename": "/assets/dragon/dragon.png"}, {"start": 853512, "audio": 0, "end": 886474, "filename": "/assets/dragon/NewDragon.json"}], "remote_package_size": 886474, "package_uuid": "5e4ab924-b8bc-4ed0-bd7e-ab463323ba9b"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 194829, "filename": "/assets/dragon/dragon2.png"}, {"start": 194829, "audio": 0, "end": 199053, "filename": "/assets/dragon/NewDragon.atlas"}, {"start": 199053, "audio": 0, "end": 827590, "filename": "/assets/dragon/dragon.png"}, {"start": 827590, "audio": 0, "end": 860552, "filename": "/assets/dragon/NewDragon.json"}], "remote_package_size": 860552, "package_uuid": "9e2d420b-283b-42d0-ba14-7deb925ca5df"});
 
 })();
 
@@ -775,8 +775,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 220,
-  'maximum': 220 + 0,
+  'initial': 222,
+  'maximum': 222 + 0,
   'element': 'anyfunc'
 });
 
@@ -1375,11 +1375,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5290176,
+    STACK_BASE = 5290144,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 47296,
-    DYNAMIC_BASE = 5290176,
-    DYNAMICTOP_PTR = 47136;
+    STACK_MAX = 47264,
+    DYNAMIC_BASE = 5290144,
+    DYNAMICTOP_PTR = 47104;
 
 
 
@@ -1795,7 +1795,7 @@ var ASM_CONSTS = {
 
 
 
-// STATICTOP = STATIC_BASE + 46272;
+// STATICTOP = STATIC_BASE + 46240;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -5450,7 +5450,7 @@ var ASM_CONSTS = {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 47136;
+      return 47104;
     }
 
   

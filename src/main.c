@@ -22,8 +22,6 @@ typedef struct GameContext {
     Camera3D camera;
 } GameContext;
 
-GameContext game_context;
-
 typedef struct SPAsset {
     spAtlas* atlas;
     spSkeletonJson* json;
@@ -64,28 +62,20 @@ void cube_init_position(ecs_rows_t *rows){
     }
 }
 
-ecs_world_t *world;
+void pre_render(ecs_rows_t *rows){
+    GameContext* game_context = ecs_get_system_context(rows->world, rows->system);
 
-
-
-void pre_render(GameContext* game_context){
     BeginDrawing();
     ClearBackground(RAYWHITE);
     BeginMode3D(game_context->camera);
     UpdateCamera(&game_context->camera);
 }
 
-void post_render(){
+void post_render(ecs_rows_t *rows){
     DrawGrid(10, 1.0f);
     EndMode3D();
     DrawFPS(10, 10);
     EndDrawing();
-}
-
-void game_update() {
-    pre_render(&game_context);
-    ecs_progress(world, 0);
-    post_render();
 }
 
 void render(ecs_rows_t *rows){
@@ -96,22 +86,34 @@ void render(ecs_rows_t *rows){
         DrawCubeWires(position[i], 2.0f, 2.0f, 2.0f, MAROON);
     }
 }
+#if defined(PLATFORM_WEB)
+ecs_world_t *world;
+void game_update() {
+    ecs_progress(world, 0);
+}
+#endif
 
 int main(int argc, char* argv[]) {
+#if defined(PLATFORM_WEB)
     world = ecs_init_w_args(argc, argv);
-
+#else
+    ecs_world_t *world = ecs_init_w_args(argc, argv);
+#endif
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 3d camera free");
     SetTargetFPS(60);
+    GameContext game_context = init_game_context();
 
-    game_context = init_game_context();
 
     ECS_COMPONENT(world, Vector3);
     ECS_COMPONENT(world, SPAsset);
     ECS_TAG(world, Redereable);
 
     ECS_SYSTEM(world, render, EcsOnUpdate, Vector3, Redereable);
+    ECS_SYSTEM(world, pre_render, EcsPreUpdate, Redereable);
+    ECS_SYSTEM(world, post_render, EcsPostUpdate, Redereable);
     ECS_SYSTEM(world, cube_init_position, EcsOnAdd, Vector3, Redereable);
     ecs_set_system_context(world, render, &game_context);
+    ecs_set_system_context(world, pre_render, &game_context);
 
     ECS_ENTITY(world, cube, Vector3, Redereable);
     ECS_ENTITY(world, dragon, Vector3, SPAsset);
@@ -121,14 +123,7 @@ int main(int argc, char* argv[]) {
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(game_update, 0, 1);
 #else
-
-    while(!WindowShouldClose()){
-        pre_render(&game_context);
-        ecs_progress(world, 0);
-        post_render();
-    }
-
+    while(ecs_progress(world, 0) && !WindowShouldClose());
     ecs_fini(world);
-
 #endif
 }
